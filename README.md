@@ -10,4 +10,3 @@ A simple phonebook/contact management application built with Django.
 - Responsive Bootstrap UI
 - Django Admin integration
 
-## Project Structure
