@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            padding-top: 70px; 
+            background-color: #f8f9fa;
+        }
+        .contact-photo { 
+            width: 50px; 
+            height: 50px; 
+            object-fit: cover; 
+            border-radius: 50%; 
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+        .contact-table {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .table thead th {
+            background-color: #f1f5f9;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+            padding: 15px 12px;
+        }
+        .table tbody td {
+            padding: 15px 12px;
+            vertical-align: middle;
+        }
+        .search-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .btn-add-contact {
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-action {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        .btn-edit {
+            background-color: #198754;
+            color: white;
+            border: none;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .page-title {
+            color: #212529;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        .search-input {
+            border-radius: 6px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+        }
+        .btn-search {
+            background-color: #6c757d;
+            color: white;
+            border-radius: 6px;
+            padding: 10px 20px;
+            border: none;
+        }
+        .empty-photo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: #e9ecef;
+            border-radius: 50%;
+            color: #6c757d;
+        }
+        .modal-content {
+            border-radius: 8px;
+            border: none;
+        }
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .photo-upload-container {
+            border: 2px dashed #ced4da;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+        .photo-upload-container:hover {
+            border-color: #0d6efd;
+            background-color: #e9ecef;
+        }
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: none;
+            border: 3px solid #dee2e6;
+        }
+        .upload-icon {
+            font-size: 2rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        .upload-text {
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .upload-subtext {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        .current-photo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .current-photo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 3px solid #dee2e6;
+        }
+        .remove-photo-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .photo-actions {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Contact Book</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">Contacts</h1>
+    
+    <div class="search-container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <input type="text" class="form-control search-input" placeholder="Search contacts...">
+            </div>
+            <div class="col-md-4 mt-2 mt-md-0">
+                <button class="btn btn-search w-100"><i class="fas fa-search me-2"></i>Search</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="contact-table">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">PHOTO</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">PHONE</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody id="contacts-table-body">
+               
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="d-flex justify-content-end mt-4">
+        <button class="btn btn-add-contact" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Add New Contact
+        </button>
+    </div>
+</div>
+
+
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Add New Contact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contactForm" enctype="multipart/form-data">
+                    <input type="hidden" id="contactId">
+                    
+                    
+                    <div class="current-photo-container" id="currentPhotoContainer" style="display: none;">
+                        <img id="currentPhoto" class="current-photo" src="" alt="Current Photo">
+                        <p class="text-muted mb-1">Current Photo</p>
+                        <button type="button" class="remove-photo-btn" onclick="removeCurrentPhoto()">
+                            <i class="fas fa-trash me-1"></i>Remove Photo
+                        </button>
+                    </div>
+                    
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Contact Photo</label>
+                        <div class="photo-upload-container" onclick="document.getElementById('contactPhoto').click()">
+                            <input type="file" class="form-control" id="contactPhoto" name="photo" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                            <div id="uploadContent">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">Click to upload photo</div>
+                                <div class="upload-subtext">PNG, JPG up to 5MB</div>
+                            </div>
+                        </div>
+                        <img id="imagePreview" class="photo-preview" src="#" alt="Image Preview">
+                        <div class="photo-actions">
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="removePreviewBtn" style="display: none;" onclick="removeImagePreview()">
+                                <i class="fas fa-times me-1"></i>Remove
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="contactName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="contactName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactPhone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="contactPhone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="contactEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactAddress" class="form-label">Address</label>
+                        <textarea class="form-control" id="contactAddress" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveContact">Save Contact</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    
+    let contacts = [
+        {
+            id: 1,
+            name: 'Kai',
+            phone: '0930201069',
+            email: 'kalkidannelfreijenberle@gmail.com',
+            photo: 'https://randomuser.me/api/portraits/men/32.jpg',
+            address: '123 Main Street, City'
+        },
+        {
+            id: 2,
+            name: 'Sarah Johnson',
+            phone: '0945112233',
+            email: 'sarah.johnson@example.com',
+            photo: 'https://randomuser.me/api/portraits/women/44.jpg',
+            address: '456 Oak Avenue, Town'
+        },
+        {
+            id: 3,
+            name: 'Michael Chen',
+            phone: '0956778899',
+            email: 'michael.chen@example.com',
+            photo: 'https://randomuser.me/api/portraits/men/67.jpg',
+            address: '789 Pine Road, Village'
+        }
+    ];
+
+    // DOM elements
+    const contactsTableBody = document.getElementById('contacts-table-body');
+    const contactForm = document.getElementById('contactForm');
+    const contactModal = document.getElementById('contactModal');
+    const modalTitle = document.getElementById('contactModalLabel');
+    const saveContactBtn = document.getElementById('saveContact');
+    const searchInput = document.querySelector('.search-input');
+    const imagePreview = document.getElementById('imagePreview');
+    const removePreviewBtn = document.getElementById('removePreviewBtn');
+    const uploadContent = document.getElementById('uploadContent');
+    const currentPhotoContainer = document.getElementById('currentPhotoContainer');
+    const currentPhoto = document.getElementById('currentPhoto');
+
+    
+    let contactModalInstance;
+
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        loadContacts();
+        contactModalInstance = new bootstrap.Modal(document.getElementById('contactModal'));
+        searchInput.addEventListener('input', function() {
+            filterContacts(this.value);
+        });
+        
+        saveContactBtn.addEventListener('click', saveContact);
+        
+      
+        document.getElementById('contactModal').addEventListener('hidden.bs.modal', function() {
+            resetForm();
+        });
+    });
+
+    
+    function loadContacts() {
+        contactsTableBody.innerHTML = '';
+        
+        contacts.forEach(contact => {
+            const row = document.createElement('tr');
+            
+            
+            let photoHtml;
+            if (contact.photo) {
+                photoHtml = `<img src="${contact.photo}" class="contact-photo" alt="${contact.name}">`;
+            } else {
+                photoHtml = `
+                    <div class="empty-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                `;
+            }
+            
+            row.innerHTML = `
+                <td>${photoHtml}</td>
+                <td>${contact.name}</td>
+                <td>${contact.phone}</td>
+                <td>${contact.email}</td>
+                <td>
+                    <button class="btn btn-action btn-edit" onclick="editContact(${contact.id})">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </button>
+                    <button class="btn btn-action btn-delete" onclick="deleteContact(${contact.id})">
+                        <i class="fas fa-trash me-1"></i>Delete
+                    </button>
+                </td>
+            `;
+            contactsTableBody.appendChild(row);
+        });
+    }
+    function filterContacts(searchTerm) {
+        const rows = contactsTableBody.getElementsByTagName('tr');
+        
+        for (let row of rows) {
+            const name = row.cells[1].textContent.toLowerCase();
+            const phone = row.cells[2].textContent.toLowerCase();
+            const email = row.cells[3].textContent.toLowerCase();
+            const search = searchTerm.toLowerCase();
+            
+            if (name.includes(search) || phone.includes(search) || email.includes(search)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    
+    function openAddModal() {
+        resetForm();
+        modalTitle.textContent = 'Add New Contact';
+        contactModalInstance.show();
+    }
+
+    
+    function editContact(id) {
+        const contact = contacts.find(c => c.id === id);
+        if (contact) {
+            document.getElementById('contactId').value = contact.id;
+            document.getElementById('contactName').value = contact.name;
+            document.getElementById('contactPhone').value = contact.phone;
+            document.getElementById('contactEmail').value = contact.email;
+            document.getElementById('contactAddress').value = contact.address || '';
+            
+            
+            if (contact.photo) {
+                currentPhoto.src = contact.photo;
+                currentPhotoContainer.style.display = 'block';
+            } else {
+                currentPhotoContainer.style.display = 'none';
+            }
+            
+            modalTitle.textContent = 'Edit Contact';
+            contactModalInstance.show();
+        }
+    }
+
+    
+    function deleteContact(id) {
+        if (confirm('Are you sure you want to delete this contact?')) {
+            contacts = contacts.filter(contact => contact.id !== id);
+            loadContacts();
+        }
+    }
+
+    
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                event.target.value = '';
+                return;
+            }
+            
+            
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file');
+                event.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                uploadContent.style.display = 'none';
+                removePreviewBtn.style.display = 'inline-block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    
+    function removeImagePreview() {
+        document.getElementById('contactPhoto').value = '';
+        imagePreview.style.display = 'none';
+        uploadContent.style.display = 'block';
+        removePreviewBtn.style.display = 'none';
+    }
+
+    
+    function removeCurrentPhoto() {
+        const contactId = document.getElementById('contactId').value;
+        if (contactId) {
+            const contact = contacts.find(c => c.id === parseInt(contactId));
+            if (contact) {
+                contact.photo = null;
+            }
+        }
+        currentPhotoContainer.style.display = 'none';
+    }
+    function resetForm() {
+        contactForm.reset();
+        document.getElementById('contactId').value = '';
+        imagePreview.style.display = 'none';
+        uploadContent.style.display = 'block';
+        removePreviewBtn.style.display = 'none';
+        currentPhotoContainer.style.display = 'none';
+    }
+
+    
+    function saveContact() {
+        const id = document.getElementById('contactId').value;
+        const name = document.getElementById('contactName').value;
+        const phone = document.getElementById('contactPhone').value;
+        const email = document.getElementById('contactEmail').value;
+        const address = document.getElementById('contactAddress').value;
+        const photoInput = document.getElementById('contactPhoto');
+        
+        if (!name || !phone || !email) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        
+        let photo = null;
+        if (photoInput.files[0]) {
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photo = e.target.result;
+                saveContactData(id, name, phone, email, address, photo);
+            };
+            reader.readAsDataURL(photoInput.files[0]);
+        } else {
+            
+            if (id) {
+                const existingContact = contacts.find(c => c.id === parseInt(id));
+                photo = existingContact ? existingContact.photo : null;
+            }
+            saveContactData(id, name, phone, email, address, photo);
+        }
+    }
+
+    
+    function saveContactData(id, name, phone, email, address, photo) {
+        if (id) {
+            
+            const index = contacts.findIndex(contact => contact.id === parseInt(id));
+            if (index !== -1) {
+                contacts[index] = { 
+                    id: parseInt(id), 
+                    name, 
+                    phone, 
+                    email, 
+                    address, 
+                    photo 
+                };
+            }
+        } else {
+            
+            const newId = contacts.length > 0 ? Math.max(...contacts.map(c => c.id)) + 1 : 1;
+            contacts.push({ 
+                id: newId, 
+                name, 
+                phone, 
+                email, 
+                address, 
+                photo 
+            });
+        }
+        
+        loadContacts();
+        contactModalInstance.hide();
+        resetForm();
+    }
+</script>
+</body>
+</html>
+
