@@ -13,6 +13,7 @@ Installation:
 
 git clone https://github.com/kal-mehiret/django-phonebook.git
 cd django-phonebook
+
 2. Create and activate virtual environment
 
 # Windows
@@ -22,15 +23,19 @@ venv\Scripts\activate
 # Linux/Mac
 python3 -m venv venv
 source venv/bin/activate
+
 3. Install dependencies
 
 pip install -r requirements.txt
+
 4. Run migrations
 
 python manage.py migrate
+
 5. Create superuser (optional)
 
 python manage.py createsuperuser
+
 6. Run development server
 
 python manage.py runserver
